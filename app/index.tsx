@@ -58,9 +58,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 16, backgroundColor: '#f3d98aff' },
   headerRow: { flexDirection: 'row', marginBottom: 12 },
-  btn: { backgroundColor: '#111', padding: 10, borderRadius: 8 },
+  btn: { backgroundColor: '#292727ff', padding: 10, borderRadius: 8 },
   btnText: { color: '#fff', fontWeight: '600' },
   empty: { marginTop: 40, alignItems: 'center' },
   emptyText: { color: '#666' },
