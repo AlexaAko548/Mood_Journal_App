@@ -38,10 +38,6 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.btn} onPress={() => router.push('./add')}>
           <Text style={styles.btnText}>+ New</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.btn, { marginLeft: 12 }]} onPress={() => router.push('./stats')}>
-          <Text style={styles.btnText}>Stats</Text>
-        </TouchableOpacity>
       </View>
 
       {loading ? (

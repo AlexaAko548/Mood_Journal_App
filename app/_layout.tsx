@@ -10,7 +10,6 @@ export default function Layout() {
         <Stack>
           <Stack.Screen name="index" options={{ title: 'Mood Journal' }} />
           <Stack.Screen name="add" options={{ title: 'New Entry' }} />
-          <Stack.Screen name="stats" options={{ title: 'Stats' }} />
         </Stack>
       </EntriesProvider>
     </GestureHandlerRootView>
