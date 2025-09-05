@@ -9,18 +9,8 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <EntriesProvider>
         <Stack> 
-          <Stack.Screen
-            name="index"
-            options={{
-              // Render an image (logo) instead of text title
-              headerTitle: () => (
-                <Image
-                  source={require('../assets/images/cat.png')} // small PNG or GIF
-                  style={{ width: 120, height: 28, resizeMode: 'cover' }}
-                />
-              )
-            }}
-          />
+          <Stack.Screen name="index" options={{ headerShown: false  }} />
+          <Stack.Screen name="homez" options={{ headerShown: false  }} />
           <Stack.Screen name="add" options={{ title: 'New Entry' }} />
         </Stack>
       </EntriesProvider>
