@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { EntriesContext } from '../src/context/EntriesContext';
 
 const MOODS = ['😄', '🙂', '😐', '😕', '😢', '😡'];
@@ -50,13 +50,13 @@ export default function AddEntryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  label: { fontSize: 16, marginBottom: 8 },
+  container: { flex: 1, padding: 16, backgroundColor: '#000000ff' },
+  label: { fontSize: 16, marginBottom: 8, color: "#c8c8c8ff" },
   moodRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  moodBtn: { padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#eee' },
-  moodBtnActive: { borderColor: '#111', backgroundColor: '#fafafa' },
-  moodText: { fontSize: 28 },
-  input: { borderWidth: 1, borderColor: '#eee', padding: 12, borderRadius: 8, minHeight: 80, marginTop: 8 },
-  saveBtn: { backgroundColor: '#111', padding: 12, borderRadius: 8, alignItems: 'center', marginTop: 18 },
-  saveText: { color: '#fff', fontWeight: '600' },
+  moodBtn: { padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#323232ff' },
+  moodBtnActive: { borderColor: '#ffffffff', backgroundColor: '#606060ff' },
+  moodText: { fontSize: 28, color: '#fff' },
+  input: { borderWidth: 1, borderColor: '#6c6c6cff', padding: 12, borderRadius: 8, minHeight: 80, marginTop: 8, color: "#fff" },
+  saveBtn: { backgroundColor: '#ffffffff', padding: 12, borderRadius: 8, alignItems: 'center', marginTop: 18 },
+  saveText: { color: '#000000ff', fontWeight: '600' },
 });
