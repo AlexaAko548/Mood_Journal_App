@@ -1,3 +1,10 @@
+# IT5103N Group 2 - Activity Documentation
+
+<img src="assets/images/screenshots/week2_1.jpeg" alt="Home Screen" width="300"/>
+<img src="assets/images/screenshots/week2_2.jpeg" alt="Add New Entry Screen" width="300"/>
+<img src="assets/images/screenshots/week2_3.jpeg" alt="Drawer" width="300"/>
+<img src="assets/images/screenshots/week2_4.jpeg" alt="Profile Screen" width="300"/>
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
