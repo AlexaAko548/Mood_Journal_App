@@ -2,21 +2,33 @@
 
 ## Week 1
 
+Progress:
+   - made a mood journal app
+   - experimented with pictures/gif
 
 
 ## Week 2
 
-Changes:
+Progress:
    - changed the theme to dark
+   - login page
    - added drawer
    - made profile page with logout button
      
 <p float="left">
-  <img src="assets/images/screenshots/week2_1.jpeg" alt="Home Screen" width="300"/>
-  <img src="assets/images/screenshots/week2_2.jpeg" alt="Add New Entry Screen" width="300"/>
-  <img src="assets/images/screenshots/week2_3.jpeg" alt="Drawer" width="300"/>
-  <img src="assets/images/screenshots/week2_4.jpeg" alt="Profile Screen" width="300"/>
+  <img src="assets/images/screenshots/week2_1.jpeg" alt="Home Screen" width="200"/>
+  <img src="assets/images/screenshots/week2_2.jpeg" alt="Add New Entry Screen" width="200"/>
+  <img src="assets/images/screenshots/week2_3.jpeg" alt="Drawer" width="200"/>
+  <img src="assets/images/screenshots/week2_4.jpeg" alt="Profile Screen" width="200"/>
 </p>
+
+
+## Week 3
+
+Progress:
+   - implemented gestures and navigation persistence
+   - added transitions
+
 
 # Welcome to your Expo app 👋
 
