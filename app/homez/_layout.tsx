@@ -35,7 +35,7 @@ export default function HomeLayout() {
         <Drawer.Screen
           name="playlistDetail"
           options={{
-            drawerItemStyle: { display: 'none' }, // hides this item from the drawer list
+            drawerItemStyle: { display: 'none' }, title: "Playlist Detail" // hides this item from the drawer list
           }}
         />
         <Drawer.Screen

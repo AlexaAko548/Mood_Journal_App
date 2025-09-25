@@ -30,6 +30,20 @@ Progress:
    - added transitions
 
 
+## Week 4
+
+Progress:
+   - updated playlist page (can add, remove, and edit playlist)
+   - added playlist detail (can add and remove songs)
+   - added transitions and animations
+   - implemented undo/redo
+
+<p float="left">
+  <img src="assets/images/screenshots/week4_1.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_2.png" alt="Playlist Detail Screen" width="200"/>
+</p>
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
