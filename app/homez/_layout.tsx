@@ -29,9 +29,19 @@ export default function HomeLayout() {
           }}
         />
         <Drawer.Screen name="home" options={{ title: "Home" }} />
+        <Drawer.Screen name="playlist" options={{ title: "Playlist" }} />
         <Drawer.Screen name="settings" options={{ title: "Settings" }} />
         <Drawer.Screen name="signup" options={{ title: "Sign Up" }} />
-        <Drawer.Screen name="playlist" options={{ title: "Playlist" }} />
+        <Drawer.Screen
+          name="playlistDetail"
+          options={{
+            drawerItemStyle: { display: 'none' }, // hides this item from the drawer list
+          }}
+        />
+        <Drawer.Screen
+          name="[id]" // if this is actually the route name you see
+          options={{ drawerItemStyle: { display: 'none' } }}
+        />
       </Drawer>
   );
 }

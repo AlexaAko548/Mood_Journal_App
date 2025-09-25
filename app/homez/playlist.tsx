@@ -1,15 +1,283 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+// app/homez/playlist.tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
+import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+import AnimatedWrapper from '../../components/AnimatedWraper';
 
-export default function PlaylistScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Your Playlist 🎶</Text>
-    </View>
-  );
+// Define types for actions
+const ADD_PLAYLIST = 'ADD_PLAYLIST';
+const REMOVE_PLAYLIST = 'REMOVE_PLAYLIST';
+const EDIT_PLAYLIST = 'EDIT_PLAYLIST';
+const UNDO = 'UNDO';
+const REDO = 'REDO';
+const SET_PLAYLISTS = 'SET_PLAYLISTS';
+
+// Playlist reducer function
+interface Playlist {
+  id: string;
+  name: string;
 }
 
+interface PlaylistState {
+  playlists: Playlist[];
+  history: any[];
+  future: any[];
+}
+
+const playlistReducer = (state: PlaylistState, action: any): PlaylistState => {
+  switch (action.type) {
+    case ADD_PLAYLIST:
+      return {
+        ...state,
+        playlists: [...state.playlists, { id: action.id, name: action.name }],
+        history: [...state.history, { type: ADD_PLAYLIST, name: action.name, id: action.id }],
+        future: [],
+      };
+
+    case REMOVE_PLAYLIST:
+      return {
+        ...state,
+        playlists: state.playlists.filter(p => p.id !== action.id),
+        history: [...state.history, { type: REMOVE_PLAYLIST, id: action.id, name: action.name }],
+        future: [],
+      };
+
+    case EDIT_PLAYLIST:
+      return {
+        ...state,
+        playlists: state.playlists.map(p => (p.id === action.id ? { ...p, name: action.name } : p)),
+        history: [...state.history, { type: EDIT_PLAYLIST, id: action.id, name: action.name, prevName: action.prevName }],
+        future: [],
+      };
+
+    case SET_PLAYLISTS:
+      return { ...state, playlists: action.playlists || [] };
+
+    case UNDO: {
+      const last = state.history[state.history.length - 1];
+      if (!last) return state;
+      const history = state.history.slice(0, -1);
+      let playlists = state.playlists.slice();
+
+      if (last.type === ADD_PLAYLIST) {
+        playlists = playlists.filter(p => p.id !== last.id);
+      } else if (last.type === REMOVE_PLAYLIST) {
+        playlists = [{ id: last.id, name: last.name || 'Restored' }, ...playlists];
+      } else if (last.type === EDIT_PLAYLIST) {
+        playlists = playlists.map(p => (p.id === last.id ? { ...p, name: last.prevName ?? p.name } : p));
+      }
+
+      return { ...state, playlists, history, future: [last, ...state.future] };
+    }
+
+    case REDO: {
+      const next = state.future[0];
+      if (!next) return state;
+      const future = state.future.slice(1);
+      let playlists = state.playlists.slice();
+
+      if (next.type === ADD_PLAYLIST) playlists = [...playlists, { id: next.id ?? Date.now().toString(), name: next.name }];
+      else if (next.type === REMOVE_PLAYLIST) playlists = playlists.filter(p => p.id !== next.id);
+      else if (next.type === EDIT_PLAYLIST) playlists = playlists.map(p => (p.id === next.id ? { ...p, name: next.name } : p));
+
+      return { ...state, playlists, history: [...state.history, next], future };
+    }
+
+    default:
+      return state;
+  }
+};
+
+const PlaylistScreen = () => {
+  const [name, setName] = useState('');
+  const [state, dispatch] = useReducer(playlistReducer, {
+    playlists: [],
+    history: [],
+    future: [],
+  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState('');
+  const router = useRouter();
+
+  // hydration guard so we don't overwrite AsyncStorage on mount
+  const didLoadRef = useRef(false);
+
+  const addPlaylist = () => {
+    if (name) {
+      const id = Date.now().toString();
+      dispatch({ type: ADD_PLAYLIST, id, name });
+      setName('');
+    }
+  };
+
+  const removePlaylist = (id: string) => {
+    // include the name if you want better undo behavior
+    const removed = state.playlists.find(p => p.id === id);
+    dispatch({ type: REMOVE_PLAYLIST, id, name: removed?.name });
+  };
+
+  const editPlaylist = () => {
+    if (editingPlaylistId && editedName) {
+      const prev = state.playlists.find(p => p.id === editingPlaylistId)?.name;
+      dispatch({ type: EDIT_PLAYLIST, id: editingPlaylistId, name: editedName, prevName: prev });
+      setModalVisible(false);
+      setEditingPlaylistId(null);
+      setEditedName('');
+    }
+  };
+
+  // Save playlists only after initial load is done
+  useEffect(() => {
+    if (!didLoadRef.current) return;
+    const savePlaylists = async () => {
+      try {
+        await AsyncStorage.setItem('@playlists', JSON.stringify(state.playlists));
+      } catch (e) {
+        console.warn('Failed to save playlists', e);
+      }
+    };
+    savePlaylists();
+  }, [state.playlists]);
+
+  // Load initial playlists
+  useEffect(() => {
+    const loadPlaylists = async () => {
+      try {
+        const playlists = await AsyncStorage.getItem('@playlists');
+        if (playlists) {
+          dispatch({ type: SET_PLAYLISTS, playlists: JSON.parse(playlists) });
+        }
+      } catch (e) {
+        console.warn('Failed to load playlists', e);
+      } finally {
+        // allow saving now that initial load has completed
+        didLoadRef.current = true;
+      }
+    };
+    loadPlaylists();
+  }, []);
+
+  return (
+    <AnimatedWrapper>
+      <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          placeholder="Enter playlist name"
+          placeholderTextColor="#aaa"
+        />
+        <TouchableOpacity onPress={addPlaylist} style={styles.addButton}>
+          <Text style={styles.addButtonText}>+ Add Playlist</Text>
+        </TouchableOpacity>
+
+        <FlatList
+          data={state.playlists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Animated.View entering={FadeIn} exiting={FadeOut} layout={Layout.springify()} style={styles.playlistItem}>
+              <TouchableOpacity
+                onPress={() => router.push({ pathname: '/homez/playlistDetail', params: { id: item.id } })}
+                style={styles.playlistName}
+              >
+                <Text style={styles.playlistText}>{item.name}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { setEditingPlaylistId(item.id); setModalVisible(true); }} style={styles.optionsButton}>
+                <Text style={styles.optionsButtonText}>...</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+        />
+
+        <View style={styles.undoRedoRow}>
+          <TouchableOpacity onPress={() => dispatch({ type: UNDO })} style={styles.button}>
+            <Text style={styles.buttonText}>Undo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => dispatch({ type: REDO })} style={styles.button}>
+            <Text style={styles.buttonText}>Redo</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modal}>
+              <TextInput
+                style={styles.input}
+                value={editedName}
+                onChangeText={setEditedName}
+                placeholder="Enter new name"
+              />
+              <TouchableOpacity onPress={editPlaylist} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => removePlaylist(editingPlaylistId!)} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Remove Playlist</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </AnimatedWrapper>
+  );
+};
+
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
-  text: { fontSize: 20, fontWeight: "600" },
+  container: { flex: 1, padding: 16, backgroundColor: '#000' },
+  input: {
+    height: 40,
+    borderColor: '#1ED760',
+    borderWidth: 1,
+    color: '#fff',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  addButton: {
+    backgroundColor: '#1ED760',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  addButtonText: { color: '#fff', fontSize: 16 },
+  playlistItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1ED760',
+  },
+  playlistName: { flex: 1 },
+  playlistText: { color: '#fff', fontSize: 18 },
+  optionsButton: { padding: 10 },
+  optionsButtonText: { color: '#1ED760', fontSize: 18 },
+  undoRedoRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  button: { backgroundColor: '#1ED760', padding: 10, borderRadius: 5 },
+  buttonText: { color: '#fff', fontSize: 16 },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modal: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalButton: {
+    backgroundColor: '#1ED760',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  modalButtonText: { color: '#fff', fontSize: 16 },
 });
+
+export default PlaylistScreen;
