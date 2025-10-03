@@ -43,6 +43,18 @@ Progress:
   <img src="assets/images/screenshots/week4_2.png" alt="Playlist Detail Screen" width="200"/>
 </p>
 
+Progress:
+   - updated the adding and editing of playlist
+   - updated the adding of songs inside a playlist
+
+<p float="left">
+  <img src="assets/images/screenshots/week4_1(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_1.1(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_1.2(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_2(updated).png" alt="Playlist Detail Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_2.1(updated).png" alt="Playlist Detail Screen" width="200"/>
+</p>
+
 
 # Welcome to your Expo app 👋
 

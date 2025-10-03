@@ -3,7 +3,16 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 
 // Actions
@@ -48,7 +57,7 @@ const songReducer = (state: any, action: any) => {
       const updatedFuture = state.future.slice(1);
       let songs = state.songs.slice();
       if (futureAction.type === ADD_SONG) songs = [...songs, futureAction.song];
-      else if (futureAction.type === REMOVE_SONG) songs = songs.filter((s: any) => s !== futureAction.song);
+      else if (futureAction.type === REMOVE_SONG) songs = state.songs.filter((s: any) => s !== futureAction.song);
       return { ...state, songs, history: [...state.history, futureAction], future: updatedFuture };
     }
     case SET_SONGS:
@@ -63,7 +72,10 @@ const PlaylistDetailScreen = () => {
   const params = useLocalSearchParams<{ id?: string }>();
   const playlistId = params.id ?? 'default';
 
-  const [song, setSong] = useState('');
+  // modal input state
+  const [songInput, setSongInput] = useState('');
+  const [addSongModalVisible, setAddSongModalVisible] = useState(false);
+
   const [state, dispatch] = useReducer(songReducer, {
     songs: [],
     history: [],
@@ -74,20 +86,14 @@ const PlaylistDetailScreen = () => {
   const didLoadRef = useRef(false);
   const router = useRouter();
 
-useLayoutEffect(() => {
+  // header back button: prefer goBack, fallback to playlist path
+  useLayoutEffect(() => {
   navigation.setOptions({
     headerShown: true,
     headerLeft: () => (
       <TouchableOpacity
-        onPress={() => {
-          if (navigation.canGoBack && navigation.canGoBack()) {
-            navigation.goBack();
-          } else {
-            router.replace('/homez/playlist'); // <-- go straight to playlist
-          }
-        }}
+        onPress={() => router.replace('/homez/playlist')}
         style={{ marginLeft: 12, padding: 6 }}
-        hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
       >
         <Ionicons name="arrow-back" size={24} color="#fff" />
       </TouchableOpacity>
@@ -95,11 +101,13 @@ useLayoutEffect(() => {
   });
 }, [navigation, router]);
 
-  const addSong = () => {
-    if (song) {
-      dispatch({ type: ADD_SONG, song });
-      setSong('');
-    }
+  // Song actions
+  const addSongFromModal = () => {
+    const trimmed = songInput.trim();
+    if (!trimmed) return; // simple validation
+    dispatch({ type: ADD_SONG, song: trimmed });
+    setSongInput('');
+    setAddSongModalVisible(false);
   };
 
   const removeSong = (s: string) => dispatch({ type: REMOVE_SONG, song: s });
@@ -137,14 +145,8 @@ useLayoutEffect(() => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={song}
-        onChangeText={setSong}
-        placeholder="Enter song name"
-        placeholderTextColor="#aaa"
-      />
-      <TouchableOpacity onPress={addSong} style={styles.addButton}>
+      {/* Add Song button opens modal */}
+      <TouchableOpacity onPress={() => { setSongInput(''); setAddSongModalVisible(true); }} style={styles.addButton}>
         <Text style={styles.addButtonText}>+ Add Song</Text>
       </TouchableOpacity>
 
@@ -173,6 +175,31 @@ useLayoutEffect(() => {
       <TouchableOpacity onPress={clearSongs} style={styles.clearButton}>
         <Text style={styles.clearButtonText}>Clear Playlist</Text>
       </TouchableOpacity>
+
+      {/* -------- Add Song Modal -------- */}
+      <Modal visible={addSongModalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Add Song</Text>
+            <TextInput
+              style={styles.input}
+              value={songInput}
+              onChangeText={setSongInput}
+              placeholder="Song name"
+              placeholderTextColor="#aaa"
+              autoFocus={Platform.OS !== 'web'}
+            />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+              <TouchableOpacity onPress={() => setAddSongModalVisible(false)} style={[styles.modalButton, { backgroundColor: '#666' }]}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={addSongFromModal} style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -187,12 +214,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     borderRadius: 5,
+    backgroundColor: '#111',
   },
   addButton: {
     backgroundColor: '#1ED760',
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+    alignItems: 'center',
   },
   addButtonText: { color: '#fff', fontSize: 16 },
   songItem: {
@@ -215,6 +244,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   clearButtonText: { color: '#fff', fontSize: 16 },
+
+  /* modal styles */
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 20,
+  },
+  modal: {
+    backgroundColor: '#fff',
+    padding: 18,
+    borderRadius: 10,
+    width: '100%',
+    maxWidth: 420,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  modalButton: {
+    backgroundColor: '#1ED760',
+    padding: 10,
+    borderRadius: 6,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  modalButtonText: { color: '#fff', fontSize: 16 },
 });
 
 export default PlaylistDetailScreen;

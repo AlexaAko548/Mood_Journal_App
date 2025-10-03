@@ -1,8 +1,18 @@
 // app/homez/playlist.tsx
+import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useReducer, useRef, useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 import AnimatedWrapper from '../../components/AnimatedWraper';
 
@@ -91,13 +101,15 @@ const playlistReducer = (state: PlaylistState, action: any): PlaylistState => {
 };
 
 const PlaylistScreen = () => {
-  const [name, setName] = useState('');
+  // states and reducer
+  const [nameInput, setNameInput] = useState(''); // used for Add modal
   const [state, dispatch] = useReducer(playlistReducer, {
     playlists: [],
     history: [],
     future: [],
   });
-  const [modalVisible, setModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null);
   const [editedName, setEditedName] = useState('');
   const router = useRouter();
@@ -105,25 +117,40 @@ const PlaylistScreen = () => {
   // hydration guard so we don't overwrite AsyncStorage on mount
   const didLoadRef = useRef(false);
 
-  const addPlaylist = () => {
-    if (name) {
-      const id = Date.now().toString();
-      dispatch({ type: ADD_PLAYLIST, id, name });
-      setName('');
-    }
+  // Add flow (from modal)
+  const openAddModal = () => {
+    setNameInput('');
+    setAddModalVisible(true);
   };
 
+  const addPlaylistFromModal = () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed) return;
+    const id = Date.now().toString();
+    dispatch({ type: ADD_PLAYLIST, id, name: trimmed });
+    setNameInput('');
+    setAddModalVisible(false);
+  };
+
+  // Remove
   const removePlaylist = (id: string) => {
-    // include the name if you want better undo behavior
     const removed = state.playlists.find(p => p.id === id);
     dispatch({ type: REMOVE_PLAYLIST, id, name: removed?.name });
   };
 
+  // Edit flow (uses separate modal)
+  const openEditModal = (id: string) => {
+    const target = state.playlists.find(p => p.id === id);
+    setEditingPlaylistId(id);
+    setEditedName(target?.name ?? '');
+    setEditModalVisible(true);
+  };
+
   const editPlaylist = () => {
-    if (editingPlaylistId && editedName) {
+    if (editingPlaylistId && editedName.trim()) {
       const prev = state.playlists.find(p => p.id === editingPlaylistId)?.name;
-      dispatch({ type: EDIT_PLAYLIST, id: editingPlaylistId, name: editedName, prevName: prev });
-      setModalVisible(false);
+      dispatch({ type: EDIT_PLAYLIST, id: editingPlaylistId, name: editedName.trim(), prevName: prev });
+      setEditModalVisible(false);
       setEditingPlaylistId(null);
       setEditedName('');
     }
@@ -163,14 +190,8 @@ const PlaylistScreen = () => {
   return (
     <AnimatedWrapper>
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter playlist name"
-          placeholderTextColor="#aaa"
-        />
-        <TouchableOpacity onPress={addPlaylist} style={styles.addButton}>
+        {/* Add button opens modal */}
+        <TouchableOpacity onPress={openAddModal} style={styles.addButton}>
           <Text style={styles.addButtonText}>+ Add Playlist</Text>
         </TouchableOpacity>
 
@@ -185,8 +206,15 @@ const PlaylistScreen = () => {
               >
                 <Text style={styles.playlistText}>{item.name}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setEditingPlaylistId(item.id); setModalVisible(true); }} style={styles.optionsButton}>
-                <Text style={styles.optionsButtonText}>...</Text>
+
+              <TouchableOpacity
+                onPress={() => openEditModal(item.id)}
+                style={styles.optionsButton}
+                hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+                accessibilityLabel="Playlist options"
+                accessibilityRole="button"
+              >
+                <MaterialIcons name="more-horiz" size={24} color="#1ED760" />
               </TouchableOpacity>
             </Animated.View>
           )}
@@ -201,23 +229,60 @@ const PlaylistScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        {/* ---------- Add Playlist Modal ---------- */}
+        <Modal visible={addModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Create Playlist</Text>
+              <TextInput
+                style={styles.input}
+                value={nameInput}
+                onChangeText={setNameInput}
+                placeholder="Playlist name"
+                placeholderTextColor="#999"
+                autoFocus={Platform.OS !== 'web'}
+              />
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+                <TouchableOpacity onPress={() => setAddModalVisible(false)} style={[styles.modalButton, { backgroundColor: '#666' }]}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={addPlaylistFromModal} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Create</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* ---------- Edit Playlist Modal ---------- */}
+        <Modal visible={editModalVisible} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modal}>
+              <Text style={styles.modalTitle}>Edit Playlist</Text>
               <TextInput
                 style={styles.input}
                 value={editedName}
                 onChangeText={setEditedName}
-                placeholder="Enter new name"
+                placeholder="New playlist name"
+                placeholderTextColor="#999"
+                autoFocus={Platform.OS !== 'web'}
               />
-              <TouchableOpacity onPress={editPlaylist} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => removePlaylist(editingPlaylistId!)} style={styles.modalButton}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+                <TouchableOpacity onPress={() => setEditModalVisible(false)} style={[styles.modalButton, { backgroundColor: '#666' }]}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={editPlaylist} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (editingPlaylistId) removePlaylist(editingPlaylistId);
+                  setEditModalVisible(false);
+                }}
+                style={[styles.modalButton, { marginTop: 10, backgroundColor: '#d9534f' }]}
+              >
                 <Text style={styles.modalButtonText}>Remove Playlist</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -237,14 +302,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     borderRadius: 5,
+    backgroundColor: '#111',
   },
   addButton: {
     backgroundColor: '#1ED760',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignItems: 'center',
   },
-  addButtonText: { color: '#fff', fontSize: 16 },
+  addButtonText: { color: '#000', fontSize: 16, fontWeight: '700' },
   playlistItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -254,7 +321,7 @@ const styles = StyleSheet.create({
   },
   playlistName: { flex: 1 },
   playlistText: { color: '#fff', fontSize: 18 },
-  optionsButton: { padding: 10 },
+  optionsButton: { padding: 8, justifyContent: 'center', alignItems: 'center' },
   optionsButtonText: { color: '#1ED760', fontSize: 18 },
   undoRedoRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
   button: { backgroundColor: '#1ED760', padding: 10, borderRadius: 5 },
@@ -264,18 +331,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 20,
   },
   modal: {
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 18,
     borderRadius: 10,
-    width: '80%',
+    width: '100%',
+    maxWidth: 420,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
   },
   modalButton: {
     backgroundColor: '#1ED760',
     padding: 10,
-    borderRadius: 5,
-    marginVertical: 5,
+    borderRadius: 6,
+    minWidth: 100,
+    alignItems: 'center',
   },
   modalButtonText: { color: '#fff', fontSize: 16 },
 });
