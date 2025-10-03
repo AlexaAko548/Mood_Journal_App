@@ -23,14 +23,18 @@ Progress:
 </p>
 
 
-## Week 3
+## Week 3 - Activity (Advanced Navigation)
+
+I implemented natural gestures — the drawer opens with a swipe, touchables/pressables use hitSlop (and Android ripple) for comfortable tapping, and icons/buttons open modals or navigate between screens. For transitions I used react-native-reanimated: FadeIn/FadeOut for error messages and the preview, layout spring animations for list changes, and a small shake effect to highlight invalid inputs. For persistence I used AsyncStorage with a hydration guard so data loads before any saves, debounced writes to avoid race conditions, and explicit cache clears on actions like form submit or removals.
 
 Progress:
    - implemented gestures and navigation persistence
    - added transitions
 
 
-## Week 4
+## Week 4 - Activity 1 (State Management)
+
+I use useReducer for playlist/song state (so actions and undo/redo stay explicit) and useState for small UI bits like modal inputs; reducers are kept pure and immutable. Persistence is handled with AsyncStorage plus a hydration guard so the app loads data first and only writes after initial load to avoid clobbering. For testing I write unit tests for reducers with Jest to confirm each action yields the right state, then use React Native Testing Library for integration tests that exercise UI flows and AsyncStorage behavior. Finally I do quick manual smoke/E2E checks (add/edit/remove items, restart app, test back navigation) to catch real-world edge cases.
 
 Progress:
    - updated playlist page (can add, remove, and edit playlist)
