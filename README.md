@@ -60,6 +60,20 @@ Progress:
 </p>
 
 
+## Week 4 - Activity 2 (Spotify Profile Creation Form)
+
+I validate inputs live as the user types: usernames must be 3–20 characters and can include letters, numbers, and underscores; emails must match a standard email format; and a genre must be selected from the list. For animations I used react-native-reanimated — invalid inputs get a quick shake to draw attention and error messages/preview fade in smoothly. The preview updates instantly as I type and uses a genre-based placeholder image; cached form data is saved to AsyncStorage and cleared on successful submit so the form auto-fills after reload but resets when submission succeeds.
+
+Progress:
+   - updated profile page
+   - added profile preview
+
+<p float="left">
+  <img src="assets/images/screenshots/week4_act2(1).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week4_act2(2).png" alt="Playlist Screen" width="200"/>
+</p>
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
