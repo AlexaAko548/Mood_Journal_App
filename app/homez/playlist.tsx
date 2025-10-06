@@ -1,8 +1,8 @@
 // app/homez/playlist.tsx
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
+import React, { useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
 import {
   FlatList,
   Modal,
@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 import AnimatedWrapper from '../../components/AnimatedWraper';
+import { useTheme } from '../../components/ThemeProvider'; // <-- theme hook
 
 // Define types for actions
 const ADD_PLAYLIST = 'ADD_PLAYLIST';
@@ -113,6 +114,8 @@ const PlaylistScreen = () => {
   const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null);
   const [editedName, setEditedName] = useState('');
   const router = useRouter();
+  const navigation: any = useNavigation();
+  const theme = useTheme(); // <-- read global theme
 
   // hydration guard so we don't overwrite AsyncStorage on mount
   const didLoadRef = useRef(false);
@@ -156,6 +159,15 @@ const PlaylistScreen = () => {
     }
   };
 
+  // update navigator header colors when theme changes
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerStyle: { backgroundColor: theme.bg },
+      headerTintColor: theme.text,
+    });
+  }, [navigation, theme.bg, theme.text]);
+
   // Save playlists only after initial load is done
   useEffect(() => {
     if (!didLoadRef.current) return;
@@ -187,24 +199,32 @@ const PlaylistScreen = () => {
     loadPlaylists();
   }, []);
 
+  // compute contrasting text color for accent pills/buttons (you can tweak this if needed)
+  const accentTextColor = '#000';
+
   return (
     <AnimatedWrapper>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.bg }]}>
         {/* Add button opens modal */}
-        <TouchableOpacity onPress={openAddModal} style={styles.addButton}>
-          <Text style={styles.addButtonText}>+ Add Playlist</Text>
+        <TouchableOpacity onPress={openAddModal} style={[styles.addButton, { backgroundColor: theme.accent }]}>
+          <Text style={[styles.addButtonText, { color: accentTextColor }]}>+ Add Playlist</Text>
         </TouchableOpacity>
 
         <FlatList
           data={state.playlists}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <Animated.View entering={FadeIn} exiting={FadeOut} layout={Layout.springify()} style={styles.playlistItem}>
+            <Animated.View
+              entering={FadeIn}
+              exiting={FadeOut}
+              layout={Layout.springify()}
+              style={[styles.playlistItem, { borderBottomColor: `${theme.accent}33` }]}
+            >
               <TouchableOpacity
                 onPress={() => router.push({ pathname: '/homez/playlistDetail', params: { id: item.id } })}
                 style={styles.playlistName}
               >
-                <Text style={styles.playlistText}>{item.name}</Text>
+                <Text style={[styles.playlistText, { color: theme.text }]}>{item.name}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -214,28 +234,31 @@ const PlaylistScreen = () => {
                 accessibilityLabel="Playlist options"
                 accessibilityRole="button"
               >
-                <MaterialIcons name="more-horiz" size={24} color="#1ED760" />
+                <MaterialIcons name="more-horiz" size={24} color={theme.accent} />
               </TouchableOpacity>
             </Animated.View>
           )}
         />
 
         <View style={styles.undoRedoRow}>
-          <TouchableOpacity onPress={() => dispatch({ type: UNDO })} style={styles.button}>
-            <Text style={styles.buttonText}>Undo</Text>
+          <TouchableOpacity onPress={() => dispatch({ type: UNDO })} style={[styles.button, { backgroundColor: theme.accent }]}>
+            <Text style={[styles.buttonText, { color: '#000' }]}>Undo</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => dispatch({ type: REDO })} style={styles.button}>
-            <Text style={styles.buttonText}>Redo</Text>
+          <TouchableOpacity onPress={() => dispatch({ type: REDO })} style={[styles.button, { backgroundColor: theme.accent }]}>
+            <Text style={[styles.buttonText, { color: '#000' }]}>Redo</Text>
           </TouchableOpacity>
         </View>
 
         {/* ---------- Add Playlist Modal ---------- */}
         <Modal visible={addModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
-            <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Create Playlist</Text>
+            <View style={[styles.modal, { backgroundColor: theme.bg }]}>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Create Playlist</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { borderColor: theme.accent, color: theme.text, backgroundColor: theme.bg === '#FFFFFF' ? '#fff' : '#111' },
+                ]}
                 value={nameInput}
                 onChangeText={setNameInput}
                 placeholder="Playlist name"
@@ -257,10 +280,13 @@ const PlaylistScreen = () => {
         {/* ---------- Edit Playlist Modal ---------- */}
         <Modal visible={editModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
-            <View style={styles.modal}>
-              <Text style={styles.modalTitle}>Edit Playlist</Text>
+            <View style={[styles.modal, { backgroundColor: theme.bg }]}>
+              <Text style={[styles.modalTitle, { color: theme.text }]}>Edit Playlist</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { borderColor: theme.accent, color: theme.text, backgroundColor: theme.bg === '#FFFFFF' ? '#fff' : '#111' },
+                ]}
                 value={editedName}
                 onChangeText={setEditedName}
                 placeholder="New playlist name"

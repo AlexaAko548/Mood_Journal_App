@@ -72,3 +72,35 @@ Progress:
   <img src="assets/images/screenshots/week4_act2(1).png" alt="Playlist Screen" width="200"/>
   <img src="assets/images/screenshots/week4_act2(2).png" alt="Playlist Screen" width="200"/>
 </p>
+
+
+## Week 5 - Activity 1 (Theme Switcher)
+
+<p float="center">
+I implemented a centralized theme using Redux as the single source of truth so changes propagate consistently across all screens. I added smooth color and fade transitions with react-native-reanimated to make theme switching feel polished and responsive. Theme mode and accent colors are persisted to AsyncStorage so the app reliably restores the user’s preferences after a restart. The Settings screen provides preset themes and quick accent selections for straightforward customization.
+</p>
+
+Progress:
+   - added themes to pick (light, dark, custom)
+
+<p float="center">-- LIGHT --</p>
+<p float="left">
+  <img src="assets/images/screenshots/week5_light1.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_light2.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_light3.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_light4.png" alt="Playlist Screen" width="200"/>
+</p>
+
+<p float="center">-- DARK --</p>
+<p float="left">
+  <img src="assets/images/screenshots/week5_dark1.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_dark2.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_dark3.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_dark4.png" alt="Playlist Screen" width="200"/>
+</p>
+
+<p float="center">-- CUSTOM ACCENTS (Can be LIGHT or DARK) --</p>
+<p float="left">
+  <img src="assets/images/screenshots/week5_pink.png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_beige.png" alt="Playlist Screen" width="200"/>
+</p>

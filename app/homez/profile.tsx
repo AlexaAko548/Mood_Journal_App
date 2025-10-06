@@ -1,25 +1,10 @@
 // app/week4/Activity2ProfileForm.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Animated, {
-  FadeIn,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import { useNavigation } from 'expo-router';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming, } from 'react-native-reanimated';
+import { useTheme } from '../../components/ThemeProvider';
 
 const usernameRegex = /^[A-Za-z0-9_]{3,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,15 +13,16 @@ type Genre = (typeof GENRES)[number];
 const STORAGE_KEY = '@week4_profile_form_v1';
 
 // Memoized preview so it only rerenders when props change
-// put this in place of your current ProfilePreview component
 const ProfilePreview = React.memo(function ProfilePreview({
   username,
   email,
   genre,
+  theme,
 }: {
   username: string;
   email: string;
   genre?: string | null;
+  theme: { bg: string; text: string; accent: string };
 }) {
   const hasData = !!(username || email || genre);
   const imageUrl = genre
@@ -44,19 +30,38 @@ const ProfilePreview = React.memo(function ProfilePreview({
     : 'https://via.placeholder.com/100?text=Profile';
 
   const [imgFailed, setImgFailed] = useState(false);
+  const navigation: any = useNavigation();
+  
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          headerShown: true,
+          headerStyle: { backgroundColor: theme.bg },
+          headerTintColor: theme.text,
+        });
+      }, [navigation, theme.bg, theme.text]);
 
-  // optional: helpful debug log so you can copy/paste and inspect the URL in browser
   useEffect(() => {
-    console.log('ProfilePreview imageUrl:', imageUrl);
-    setImgFailed(false); // reset failure when url changes
+    // reset on url change
+    setImgFailed(false);
   }, [imageUrl]);
 
   return (
-    <Animated.View entering={FadeIn.duration(300)} style={[styles.previewCard, !hasData && styles.previewCardEmpty]}>
+    <Animated.View
+      entering={FadeIn.duration(300)}
+      style={[
+        styles.previewCard,
+        !hasData && styles.previewCardEmpty,
+        { backgroundColor: theme.bg, borderColor: `${theme.accent}33` },
+      ]}
+    >
       {imgFailed ? (
-        // fallback box with text if remote image fails
-        <View style={[styles.previewImage, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#444' }]}>
-          <Text style={{ color: '#fff', fontSize: 12 }}>{genre ? String(genre) : 'Profile'}</Text>
+        <View
+          style={[
+            styles.previewImage,
+            { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.accent },
+          ]}
+        >
+          <Text style={{ color: theme.bg, fontSize: 12 }}>{genre ? String(genre) : 'Profile'}</Text>
         </View>
       ) : (
         <Image
@@ -71,20 +76,22 @@ const ProfilePreview = React.memo(function ProfilePreview({
       )}
 
       <View style={{ flex: 1 }}>
-        <Text style={styles.previewLabel}>Username</Text>
-        <Text style={styles.previewText}>{username || '—'}</Text>
+        <Text style={[styles.previewLabel, { color: theme.text }]}>Username</Text>
+        <Text style={[styles.previewText, { color: theme.text }]}>{username || '—'}</Text>
 
-        <Text style={styles.previewLabel}>Email</Text>
-        <Text style={styles.previewText}>{email || '—'}</Text>
+        <Text style={[styles.previewLabel, { color: theme.text }]}>Email</Text>
+        <Text style={[styles.previewText, { color: theme.text }]}>{email || '—'}</Text>
 
-        <Text style={styles.previewLabel}>Genre</Text>
-        <Text style={styles.previewText}>{genre || '—'}</Text>
+        <Text style={[styles.previewLabel, { color: theme.text }]}>Genre</Text>
+        <Text style={[styles.previewText, { color: theme.text }]}>{genre || '—'}</Text>
       </View>
     </Animated.View>
   );
 });
 
 export default function Activity2ProfileForm() {
+  const theme = useTheme();
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [genre, setGenre] = useState<string | null>(null);
@@ -200,7 +207,7 @@ export default function Activity2ProfileForm() {
 
     if (ue || ee || ge) return;
 
-    // success: clear cache and reset
+    // success: clear cache and reset (assignment spec)
     try {
       await AsyncStorage.removeItem(STORAGE_KEY);
     } catch (e) {
@@ -213,50 +220,63 @@ export default function Activity2ProfileForm() {
 
   const onSelectGenre = (g: string) => setGenre(g);
 
-  const previewProps = useMemo(() => ({ username, email, genre }), [username, email, genre]);
+  const previewProps = useMemo(() => ({ username, email, genre, theme }), [username, email, genre, theme]);
+
+  // contrasting colors for inputs/buttons
+  const inputBg = theme.bg === '#FFFFFF' ? '#fff' : '#111';
+  const inputTextColor = theme.text;
+  const placeholderColor = theme.text === '#111111' ? '#666' : '#999';
+  const submitTextColor = theme.bg === '#FFFFFF' ? '#000' : '#000';
 
   return (
     <KeyboardAvoidingView behavior={Platform.select({ ios: 'padding', android: undefined })} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled">
-
+      <ScrollView contentContainerStyle={[styles.page, { backgroundColor: theme.bg }]} keyboardShouldPersistTaps="handled">
         <View style={styles.form}>
           <Animated.View style={[styles.fieldWrap, usernameStyle]}>
-            <Text style={styles.label}>Username</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Username</Text>
             <TextInput
               value={username}
               onChangeText={setUsername}
-              style={[styles.input, usernameError ? styles.inputError : null]}
+              style={[
+                styles.input,
+                usernameError ? styles.inputError : null,
+                { backgroundColor: inputBg, color: inputTextColor, borderColor: usernameError ? '#d9534f' : theme.accent },
+              ]}
               placeholder="3-20 chars, letters/numbers/_"
-              placeholderTextColor="#999"
+              placeholderTextColor={placeholderColor}
               autoCapitalize="none"
             />
             {usernameError ? (
-              <Animated.Text entering={FadeIn} style={styles.errorText}>
+              <Animated.Text entering={FadeIn} style={[styles.errorText, { color: '#ff8b8b' }]}>
                 {usernameError}
               </Animated.Text>
             ) : null}
           </Animated.View>
 
           <Animated.View style={[styles.fieldWrap, emailStyle]}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Email</Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              style={[styles.input, emailError ? styles.inputError : null]}
+              style={[
+                styles.input,
+                emailError ? styles.inputError : null,
+                { backgroundColor: inputBg, color: inputTextColor, borderColor: emailError ? '#d9534f' : theme.accent },
+              ]}
               placeholder="you@example.com"
-              placeholderTextColor="#999"
+              placeholderTextColor={placeholderColor}
               keyboardType="email-address"
               autoCapitalize="none"
             />
             {emailError ? (
-              <Animated.Text entering={FadeIn} style={styles.errorText}>
+              <Animated.Text entering={FadeIn} style={[styles.errorText, { color: '#ff8b8b' }]}>
                 {emailError}
               </Animated.Text>
             ) : null}
           </Animated.View>
 
           <Animated.View style={[styles.fieldWrap, genreStyle]}>
-            <Text style={styles.label}>Favorite Genre</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Favorite Genre</Text>
             <View style={styles.genreRow}>
               {GENRES.map(g => {
                 const active = genre === g;
@@ -264,26 +284,36 @@ export default function Activity2ProfileForm() {
                   <TouchableOpacity
                     key={g}
                     onPress={() => onSelectGenre(g)}
-                    style={[styles.genreBtn, active && styles.genreBtnActive]}
+                    style={[
+                      styles.genreBtn,
+                      active && styles.genreBtnActive,
+                      active && { backgroundColor: theme.accent },
+                      { backgroundColor: !active ? (theme.bg === '#FFFFFF' ? '#eee' : '#222') : theme.accent },
+                    ]}
                   >
-                    <Text style={[styles.genreText, active && styles.genreTextActive]}>{g}</Text>
+                    <Text style={[styles.genreText, active && styles.genreTextActive, { color: active ? '#000' : theme.text }]}>
+                      {g}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
             </View>
             {genreError ? (
-              <Animated.Text entering={FadeIn} style={styles.errorText}>
+              <Animated.Text entering={FadeIn} style={[styles.errorText, { color: '#ff8b8b' }]}>
                 {genreError}
               </Animated.Text>
             ) : null}
           </Animated.View>
 
-          <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-            <Text style={styles.submitText}>Submit (validate & clear)</Text>
+          <TouchableOpacity
+            style={[styles.submitBtn, { backgroundColor: theme.accent }]}
+            onPress={handleSubmit}
+          >
+            <Text style={[styles.submitText, { color: submitTextColor }]}>Submit (validate & clear)</Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.previewHeader}>Profile Preview</Text>
+        <Text style={[styles.previewHeader, { color: theme.text }]}>Profile Preview</Text>
         <ProfilePreview {...previewProps} />
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -377,6 +407,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#222',
   },
   previewCardEmpty: {
     opacity: 0.85,

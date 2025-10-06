@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+import { useTheme } from '../../components/ThemeProvider';
 
 // Actions
 const ADD_SONG = 'ADD_SONG';
@@ -86,20 +87,25 @@ const PlaylistDetailScreen = () => {
   const didLoadRef = useRef(false);
   const router = useRouter();
 
+  const theme = useTheme(); // <-- read global theme
+
   // header back button: prefer goBack, fallback to playlist path
   useLayoutEffect(() => {
-  navigation.setOptions({
-    headerShown: true,
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={() => router.replace('/homez/playlist')}
-        style={{ marginLeft: 12, padding: 6 }}
-      >
-        <Ionicons name="arrow-back" size={24} color="#fff" />
-      </TouchableOpacity>
-    ),
-  });
-}, [navigation, router]);
+    navigation.setOptions({
+      headerShown: true,
+      headerStyle: { backgroundColor: theme.bg },
+      headerTintColor: theme.text,
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => router.replace('/homez/playlist')}
+          style={{ marginLeft: 12, padding: 6 }}
+          hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+        >
+          <Ionicons name="arrow-back" size={24} color={theme.text} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, router, theme.bg, theme.text]);
 
   // Song actions
   const addSongFromModal = () => {
@@ -144,45 +150,59 @@ const PlaylistDetailScreen = () => {
   }, [state.songs, playlistId]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.bg }]}>
       {/* Add Song button opens modal */}
-      <TouchableOpacity onPress={() => { setSongInput(''); setAddSongModalVisible(true); }} style={styles.addButton}>
-        <Text style={styles.addButtonText}>+ Add Song</Text>
+      <TouchableOpacity
+        onPress={() => {
+          setSongInput('');
+          setAddSongModalVisible(true);
+        }}
+        style={[styles.addButton, { backgroundColor: theme.accent }]}
+      >
+        <Text style={[styles.addButtonText, { color: theme.bg === '#FFFFFF' ? '#000' : '#000' }]}>+ Add Song</Text>
       </TouchableOpacity>
 
       <FlatList
         data={state.songs}
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
-          <Animated.View entering={FadeIn} exiting={FadeOut} layout={Layout.springify()} style={styles.songItem}>
-            <Text style={styles.songText}>{item}</Text>
-            <TouchableOpacity onPress={() => removeSong(item)} style={styles.removeButton}>
-              <Text style={styles.removeButtonText}>Remove</Text>
+          <Animated.View
+            entering={FadeIn}
+            exiting={FadeOut}
+            layout={Layout.springify()}
+            style={[styles.songItem, { borderBottomColor: `${theme.accent}33` }]}
+          >
+            <Text style={[styles.songText, { color: theme.text }]}>{item}</Text>
+            <TouchableOpacity onPress={() => removeSong(item)} style={[styles.removeButton, { backgroundColor: '#d9534f' }]}>
+              <Text style={[styles.removeButtonText, { color: '#fff' }]}>Remove</Text>
             </TouchableOpacity>
           </Animated.View>
         )}
       />
 
       <View style={styles.undoRedoRow}>
-        <TouchableOpacity onPress={undoAction} style={styles.button}>
-          <Text style={styles.buttonText}>Undo</Text>
+        <TouchableOpacity onPress={undoAction} style={[styles.button, { backgroundColor: theme.accent }]}>
+          <Text style={[styles.buttonText, { color: '#000' }]}>Undo</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={redoAction} style={styles.button}>
-          <Text style={styles.buttonText}>Redo</Text>
+        <TouchableOpacity onPress={redoAction} style={[styles.button, { backgroundColor: theme.accent }]}>
+          <Text style={[styles.buttonText, { color: '#000' }]}>Redo</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={clearSongs} style={styles.clearButton}>
-        <Text style={styles.clearButtonText}>Clear Playlist</Text>
+      <TouchableOpacity onPress={clearSongs} style={[styles.clearButton, { backgroundColor: '#d9534f' }]}>
+        <Text style={[styles.clearButtonText, { color: '#fff' }]}>Clear Playlist</Text>
       </TouchableOpacity>
 
       {/* -------- Add Song Modal -------- */}
       <Modal visible={addSongModalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Add Song</Text>
+          <View style={[styles.modal, { backgroundColor: theme.bg }]}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Add Song</Text>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                { borderColor: theme.accent, color: theme.text, backgroundColor: theme.bg === '#FFFFFF' ? '#fff' : '#111' },
+              ]}
               value={songInput}
               onChangeText={setSongInput}
               placeholder="Song name"
@@ -193,8 +213,8 @@ const PlaylistDetailScreen = () => {
               <TouchableOpacity onPress={() => setAddSongModalVisible(false)} style={[styles.modalButton, { backgroundColor: '#666' }]}>
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={addSongFromModal} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>Add</Text>
+              <TouchableOpacity onPress={addSongFromModal} style={[styles.modalButton, { backgroundColor: theme.accent }]}>
+                <Text style={[styles.modalButtonText, { color: '#000' }]}>Add</Text>
               </TouchableOpacity>
             </View>
           </View>
