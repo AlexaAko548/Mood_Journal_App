@@ -76,7 +76,7 @@ Progress:
 
 ## Week 5 - Activity 1 (Theme Switcher)
 
-<p text-align="center">
+<p style="text-align: center;">
 I implemented a centralized theme using Redux as the single source of truth so changes propagate consistently across all screens. I added smooth color and fade transitions with react-native-reanimated to make theme switching feel polished and responsive. Theme mode and accent colors are persisted to AsyncStorage so the app reliably restores the user’s preferences after a restart. The Settings screen provides preset themes and quick accent selections for straightforward customization.
 </p>
 
