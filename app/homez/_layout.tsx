@@ -43,6 +43,12 @@ export default function HomeLayout() {
           options={{ drawerItemStyle: { display: 'none' } }}
         />
         <Drawer.Screen name="cameraPage" options={{ title: "Camera" }} />
+        <Drawer.Screen
+        name="map"
+        options={{
+          title: "Mood Map",
+        }}
+      />
       </Drawer>
   );
 }

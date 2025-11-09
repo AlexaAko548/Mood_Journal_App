@@ -105,6 +105,7 @@ Progress:
   <img src="assets/images/screenshots/week5_beige.png" alt="Playlist Screen" width="200"/>
 </p>
 
+
 ## Week 5 - Activity 2 (Camera with Filters)
 
 <p style="text-align: center;">
@@ -118,4 +119,15 @@ I added a camera screen you can open from the drawer where you can flip the lens
   <img src="assets/images/screenshots/week5_act2(4).png" alt="Playlist Screen" width="200"/>
   <img src="assets/images/screenshots/week5_act2(5).png" alt="Playlist Screen" width="200"/>
   <img src="assets/images/screenshots/week5_act2(6).png" alt="Playlist Screen" width="200"/>
+</p>
+
+
+## Week 6 - Activity 2 (Enhancing Your React Native App with Location-Based Map Features)
+
+<p style="text-align: center;">
+The map now lets users search for a place by typing a location name, and it automatically moves and zooms to that spot while showing a small preview with details. It also tracks the user’s current location and includes preset mood checkpoints with geofencing alerts. The interface has zoom controls, a recenter button, and a dark map theme for a cleaner look. One of the main challenges was handling version mismatches and making sure the map worked properly on both mobile and web.
+</p>
+
+<p float="left">
+  <img src="assets/images/screenshots/week6_1.png" alt="Playlist Screen" width="200"/>
 </p>
