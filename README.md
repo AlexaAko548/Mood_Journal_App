@@ -16,10 +16,10 @@ Progress:
    - made profile page with logout button
      
 <p float="left">
-  <img src="assets/images/screenshots/week2_1.jpeg" alt="Home Screen" width="200"/>
-  <img src="assets/images/screenshots/week2_2.jpeg" alt="Add New Entry Screen" width="200"/>
-  <img src="assets/images/screenshots/week2_3.jpeg" alt="Drawer" width="200"/>
-  <img src="assets/images/screenshots/week2_4.jpeg" alt="Profile Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week2_1.jpeg" alt="Home Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week2_2.jpeg" alt="Add New Entry Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week2_3.jpeg" alt="Drawer" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week2_4.jpeg" alt="Profile Screen" width="200"/>
 </p>
 
 
@@ -43,8 +43,8 @@ Progress:
    - implemented undo/redo
 
 <p float="left">
-  <img src="assets/images/screenshots/week4_1.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_2.png" alt="Playlist Detail Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_1.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_2.png" alt="Playlist Detail Screen" width="200"/>
 </p>
 
 Progress:
@@ -52,11 +52,11 @@ Progress:
    - updated the adding of songs inside a playlist
 
 <p float="left">
-  <img src="assets/images/screenshots/week4_1(updated).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_1.1(updated).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_1.2(updated).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_2(updated).png" alt="Playlist Detail Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_2.1(updated).png" alt="Playlist Detail Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_1(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_1.1(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_1.2(updated).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_2(updated).png" alt="Playlist Detail Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_2.1(updated).png" alt="Playlist Detail Screen" width="200"/>
 </p>
 
 
@@ -69,8 +69,8 @@ Progress:
    - added profile preview
 
 <p float="left">
-  <img src="assets/images/screenshots/week4_act2(1).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week4_act2(2).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_act2(1).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week4_act2(2).png" alt="Playlist Screen" width="200"/>
 </p>
 
 
@@ -85,24 +85,24 @@ Progress:
 
 <p float="center">-- LIGHT --</p>
 <p float="left">
-  <img src="assets/images/screenshots/week5_light1.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_light2.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_light3.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_light4.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_light1.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_light2.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_light3.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_light4.png" alt="Playlist Screen" width="200"/>
 </p>
 
 <p float="center">-- DARK --</p>
 <p float="left">
-  <img src="assets/images/screenshots/week5_dark1.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_dark2.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_dark3.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_dark4.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_dark1.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_dark2.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_dark3.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_dark4.png" alt="Playlist Screen" width="200"/>
 </p>
 
 <p float="center">-- CUSTOM ACCENTS (Can be LIGHT or DARK) --</p>
 <p float="left">
-  <img src="assets/images/screenshots/week5_pink.png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_beige.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_pink.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_beige.png" alt="Playlist Screen" width="200"/>
 </p>
 
 
@@ -113,12 +113,12 @@ I added a camera screen you can open from the drawer where you can flip the lens
 </p>
 
 <p float="left">
-  <img src="assets/images/screenshots/week5_act2(1).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_act2(2).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_act2(3).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_act2(4).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_act2(5).png" alt="Playlist Screen" width="200"/>
-  <img src="assets/images/screenshots/week5_act2(6).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(1).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(2).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(3).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(4).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(5).png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week5_act2(6).png" alt="Playlist Screen" width="200"/>
 </p>
 
 
@@ -129,5 +129,5 @@ The map now lets users search for a place by typing a location name, and it auto
 </p>
 
 <p float="left">
-  <img src="assets/images/screenshots/week6_1.png" alt="Playlist Screen" width="200"/>
+  <img src="/Mood_Journal_App/assets/images/screenshots/week6_1.png" alt="Playlist Screen" width="200"/>
 </p>
