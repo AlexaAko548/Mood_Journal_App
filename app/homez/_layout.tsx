@@ -31,7 +31,7 @@ export default function HomeLayout() {
         <Drawer.Screen name="home" options={{ title: "Home" }} />
         <Drawer.Screen name="playlist" options={{ title: "Playlist" }} />
         <Drawer.Screen name="settings" options={{ title: "Settings" }} />
-        <Drawer.Screen name="signup" options={{ title: "Sign Up" }} />
+        <Drawer.Screen name="signup" options={{ title: "Sign Up" , drawerItemStyle: {display: 'none'}}} />
         <Drawer.Screen
           name="playlistDetail"
           options={{
@@ -42,6 +42,7 @@ export default function HomeLayout() {
           name="[id]" // if this is actually the route name you see
           options={{ drawerItemStyle: { display: 'none' } }}
         />
+        <Drawer.Screen name="cameraPage" options={{ title: "Camera" }} />
       </Drawer>
   );
 }

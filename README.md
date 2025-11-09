@@ -104,3 +104,18 @@ Progress:
   <img src="assets/images/screenshots/week5_pink.png" alt="Playlist Screen" width="200"/>
   <img src="assets/images/screenshots/week5_beige.png" alt="Playlist Screen" width="200"/>
 </p>
+
+## Week 5 - Activity 2 (Camera with Filters)
+
+<p style="text-align: center;">
+I added a camera screen you can open from the drawer where you can flip the lens and take photos. After capturing, a preview appears with filter choices (grayscale, sepia), an intensity slider, and Save/Delete buttons so you can tweak before saving. Saved pictures go into a persistent gallery that remains after reload, and each photo can be edited (rotate or crop) and then saved back to the gallery. The flow is straightforward: open camera → capture → adjust → save → photo shows up in the gallery.
+</p>
+
+<p float="left">
+  <img src="assets/images/screenshots/week5_act2(1).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_act2(2).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_act2(3).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_act2(4).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_act2(5).png" alt="Playlist Screen" width="200"/>
+  <img src="assets/images/screenshots/week5_act2(6).png" alt="Playlist Screen" width="200"/>
+</p>
