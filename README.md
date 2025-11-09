@@ -131,3 +131,14 @@ The map now lets users search for a place by typing a location name, and it auto
 <p float="left">
   <img src="/Mood_Journal_App/assets/images/screenshots/week6_1.png" alt="Playlist Screen" width="200"/>
 </p>
+
+
+## Week 7 - Activity 1 (Pokemon Data Fetch)
+
+<p style="text-align: center;">
+API integration lets our app connect to external services or databases to get and send data. In this project, i used it to fetch Pokémon details from the PokeAPI and display them in the app. It helps make the app dynamic because the data updates automatically from the source. The challenge was handling slow internet and making sure the data loads smoothly without errors.
+</p>
+
+<p float="left">
+  <img src="/Mood_Journal_App/assets/images/screenshots/week7_1.png" alt="Playlist Screen" width="200"/>
+</p>
